@@ -1,0 +1,24 @@
+﻿@using RoundTheCode.TicTacToe.Models 
+<div @onclick="@Click" class="square">
+    @if (Square != null)
+    {
+        if (Square.Mark.HasValue)
+        {
+            <span>@Square.Mark.Value</span>
+        }
+    }
+</div>
+@code {
+    [Parameter]
+    public Square Square { get; set; }
+
+    [Parameter]
+    public Action<MouseEventArgs> ClickParameter { get; set; }
+
+    public void Click (MouseEventArgs mouseEventArgs)
+    {
+        ClickParameter?.Invoke(mouseEventArgs);
+    }
+
+
+}

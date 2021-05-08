@@ -1,0 +1,59 @@
+﻿@page "/"
+@using RoundTheCode.TicTacToe.Models
+@if (Game != null)
+{
+
+<div class="game">
+    @for (var tt = 1; tt <= 3; tt++)
+    {
+        for (var vv = 1; vv <= 3; vv++)
+        {
+            var square = Game.Squares[((((tt - 1) * 3) + vv) - 1)];
+
+            <SquareComponent Square="@square" ClickParameter="@(e => SquareClick(e, square))"></SquareComponent>
+        }
+    }
+</div>
+<div class="footer">
+    <p><button @onclick="@Reset">Reset game</button></p>
+    @if (Game.Winner.HasValue)
+    {
+        <p class="score-board">@Game.Winner.Value has won the game!</p>
+    }
+    else if (Game.Squares.Count(x => x.Mark.HasValue) == 9)
+    {
+        <p class="score-board">Game has been drawn.</p>
+    }
+
+    <p class="score-board">Current Score: O @Game.OWinner-@Game.XWinner X</p>
+</div>
+}
+@code {
+
+    public Game Game { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Game = new Game();
+
+        await base.OnInitializedAsync();
+    }
+
+    public void SquareClick(MouseEventArgs mouseEventArgs, Square square)
+    {
+        if (!Game.Winner.HasValue)
+        {
+            square.Mark = Game.NextTurn;
+            Game.Next();
+
+            StateHasChanged();
+        }
+    }
+
+    public void Reset(MouseEventArgs mouseEventArgs)
+    {
+        Game.ResetGame();
+        StateHasChanged();
+    }
+}
